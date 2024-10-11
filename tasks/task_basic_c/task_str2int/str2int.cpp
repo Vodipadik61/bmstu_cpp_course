@@ -7,9 +7,9 @@ int main() {
     string stroka;
     getline(cin, stroka);
 
-    istringstream is(stroka);
+    istringstream isstr(stroka);
     int num;
-    if (is >> num) {
+    if (isstr >> num) {
         cout << num << endl;
     }
     else {
@@ -17,4 +17,5 @@ int main() {
     }
 
     return 0;
+
 }
