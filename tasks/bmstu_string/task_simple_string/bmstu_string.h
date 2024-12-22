@@ -93,12 +93,12 @@ private:
     size_t length; // Длина строки
 };
 
-// Пример использования
+
 int main() {
     SimpleString str1("Hello");
     SimpleString str2(" World");
     SimpleString str3 = str1 + str2;
 
-    std::cout << str3.c_str() << std::endl; // Вывод: Hello World
+    std::cout << str3.c_str() << std::endl; 
     return 0;
 }
