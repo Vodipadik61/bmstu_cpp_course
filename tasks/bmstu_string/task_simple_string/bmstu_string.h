@@ -1,108 +1,104 @@
-#pragma once
-
-#include <exception>
+#include <cstring>
 #include <iostream>
 
-namespace bmstu {
-template <typename T> class basic_string;
-
-typedef basic_string<char> string;
-typedef basic_string<wchar_t> wstring;
-typedef basic_string<char16_t> u16string;
-typedef basic_string<char32_t> u32string;
-
-template <typename T> class basic_string {
+class SimpleString {
 public:
-  /// Конструктор по умолчанию
-  basic_string()
-      : ptr_(nullptr),
-        size_(0) {
-  }
+    // Конструктор по умолчанию
+    SimpleString() : data(nullptr), length(0) {}
 
-  basic_string(size_t size)
-      : ptr_(nullptr),
-        size_(0) {
-  }
+    // Конструктор из C-строки
+    SimpleString(const char* str) {
+        if (str) {
+            length = std::strlen(str);
+            data = new char[length + 1];
+            std::strcpy(data, str);
+        } else {
+            data = nullptr;
+            length = 0;
+        }
+    }
 
-  basic_string(std::initializer_list<T> il)
-      : ptr_(nullptr),
-        size_(0) {
-  }
+    // Конструктор копирования
+    SimpleString(const SimpleString& other) {
+        length = other.length;
+        if (length > 0) {
+            data = new char[length + 1];
+            std::strcpy(data, other.data);
+        } else {
+            data = nullptr;
+        }
+    }
 
-  basic_string(const T* c_str) {
-  }
+    // Оператор присваивания
+    SimpleString& operator=(const SimpleString& other) {
+        if (this != &other) {
+            delete[] data; // Освобождаем старую память
+            length = other.length;
+            if (length > 0) {
+                data = new char[length + 1];
+                std::strcpy(data, other.data);
+            } else {
+                data = nullptr;
+            }
+        }
+        return *this;
+    }
 
-  basic_string(const basic_string& other) {
-  }
+    // Деструктор
+    ~SimpleString() {
+        delete[] data;
+    }
 
-  basic_string(basic_string&& dying) {
-  }
+    // Получение длины строки
+    size_t size() const {
+        return length;
+    }
 
-  ~basic_string() {
-  }
+    // Индексатор
+    char& operator[](size_t index) {
+        return data[index];
+    }
 
-  const T* c_str() const {
-    return nullptr;
-  }
+    const char& operator[](size_t index) const {
+        return data[index];
+    }
 
-  size_t size() const {
-    return 0;
-  }
+    // Преобразование в C-строку
+    const char* c_str() const {
+        return data ? data : "";
+    }
 
-  basic_string& operator=(basic_string&& other) {
-    return *this;
-  }
+    // Оператор сложения
+    SimpleString operator+(const SimpleString& other) const {
+        SimpleString result;
+        result.length = length + other.length;
+        result.data = new char[result.length + 1];
+        if (data) {
+            std::strcpy(result.data, data);
+        }
+        if (other.data) {
+            std::strcat(result.data, other.data);
+        }
+        return result;
+    }
 
-  basic_string& operator=(const T* c_str) {
-    return *this;
-  }
-
-  basic_string& operator=(const basic_string& other) {
-    return *this;
-  }
-
-  friend basic_string<T> operator+(const basic_string<T>& left,
-                                   const basic_string<T>& right) {
-    return {};
-  }
-
-  template <typename S> friend S& operator<<(S& os, const basic_string& obj) {
-    return os;
-  }
-
-  template <typename S> friend S& operator>>(S& is, basic_string& obj) {
-    return is;
-  }
-
-  basic_string& operator+=(const basic_string& other) {
-    return *this;
-  }
-
-  basic_string& operator+=(T symbol) {
-    return *this;
-  }
-
-  T& operator[](size_t index) noexcept {
-    return data()[0];
-  }
-
-  T& at(size_t index) {
-    return data()[0];
-  }
+    // Оператор сравнения
+    bool operator==(const SimpleString& other) const {
+        if (length != other.length) return false;
+        return std::strcmp(data, other.data) == 0;
+    }
 
 private:
-  static size_t strlen_(const T* str) {
-    return 0;
-  }
-
-  void clean_() {
-  }
-
-  T* data() {
-    return nullptr;
-  }
-
-  T* ptr_ = nullptr;
-  size_t size_;
+    char* data; // Указатель на массив символов
+    size_t length; // Длина строки
 };
-} // namespace bmstu
+
+// Пример использования
+int main() {
+    SimpleString str1("Hello");
+    SimpleString str2(" World");
+    SimpleString str3 = str1 + str2;
+
+    std::cout << str3.c_str() << std::endl; // Вывод: Hello World
+    return 0;
+}
