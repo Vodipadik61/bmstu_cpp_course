@@ -1,6 +1,6 @@
-#include <assert.h>
 #include "str2int.h"
 #include "stdio.h"
+<<<<<<< HEAD
 int str2int(const char *str) {
   int sign = 1;
   int result = 0;
@@ -22,3 +22,10 @@ int str2int(const char *str) {
   assert(count > 0);
   return result * sign;
 }
+=======
+#include <assert.h>
+
+int str2int(const char* str) {
+  return 0;
+}
+>>>>>>> refs/remotes/origin/main
